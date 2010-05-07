@@ -1,0 +1,25 @@
+{
+  "name": "On-The-Fly PasswordMaker",
+  "version": "1.0",
+  "description": "Easy PasswordMaker for Chrome.",
+  "icons": {
+    "128": "icon_128.png",
+    "16": "icon_16.png",
+    "32": "icon_32.png",
+    "48": "icon_48.png"
+  },
+  //"options_page": "options.html",
+  "browser_action": {
+    "default_icon": "icon_16t.png",
+    "popup": "popup.html"
+  },
+  "permissions": [
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["jquery-1.4.2.js", "password_maker.js", "content_script.js"]
+    }
+  ]
+}

@@ -1,0 +1,290 @@
+<!--
+PasswordMaker - Creates and manages passwords
+Copyright (C) 2005 Eric H. Jung and LeahScape, Inc.
+Chrome Version by Richard Musiol
+http://passwordmaker.org/
+This library is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation; either version 2.1 of the License, or (at
+your option) any later version.
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESSFOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+for more details.
+You should have received a copy of the GNU Lesser General Public License
+along with this library; if not, write to the Free Software Foundation,
+Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+-->
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="password_maker.js">
+    </script>
+    <script type="text/javascript" src="options.js">
+    </script>
+  </head>
+  <body>
+    <form onsubmit="return false;">
+      <div id="body-container">
+        <div id="header">
+          <h1>PasswordMaker</h1>
+        </div>
+        <div id="extensionTemplate">
+          <div id="container" class="vbox-container">
+            <div id="top" class="wbox" style="padding-right: 5px">
+              <div class="section-header">
+                <table cellpadding="0" cellspacing="0" width="100%">
+                  <tr valign="center">
+                    <td>
+                      <span class="section-header-title">Generate Password</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+            <div id="developer_tools" class="wbox-dev-mode showInDevMode">
+              <div class="developer-mode">
+                <table width="100%" cellpadding="2" cellspacing="0">
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Profile:</span>
+                    </td>
+                    <td valign="middle">
+                      <select id="profileLB" name="profile" class="editable" onchange="loadProfile();">
+                        <option value="!!!edit!!!" class="activateEdit">New Profile</option>
+                      </select>
+                      <script type="text/javascript">
+                        /*
+                         profileLB = new Bs_Dropdown();
+                         profileLB.imgDir = 'scripts/blueShoes/components/dropdown/img/win2k/';
+                         profileLB.setValue('Default');
+                         profileLB.drawInto('profileLB');
+                         profileLB.attachEvent('onChange', loadProfile);
+                         */
+                        if (getCookie("profileList") != null) {
+                            // load the various profiles
+                            var a = unescape(getCookie("profileList"));
+                            var profileListArray = a.split("|");
+                            
+                            for (var i = 0; i < profileListArray.length; i++) {
+                                var option = document.createElement("option");
+                                option.text = unescape(profileListArray[i]);
+                                EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
+                                
+                                if (i == 0) 
+                                    option.selected = "selected";
+                            }
+                        }
+                        else {
+                            profileListArray = new Array("Default");
+                            
+                            var option = document.createElement("option");
+                            option.text = "Default";
+                            EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
+                            option.selected = "selected";
+                        }
+                      </script>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Input URL:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" type="edit" id="preURL" onchange="populateURL();" onkeyup="populateURL();" onkeydown="populateURL();" onkeypress="populateURL();" oninput="populateURL();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Master Password:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" type="password" id="passwdMaster" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Use l33t:</span>
+                    </td>
+                    <td valign="middle">
+                      <select class="dropmenu" id="whereLeetLB" onchange="onWhereLeetLBChanged();preGeneratePassword();">
+                        <option value="off">not at all</option>
+                        <option value="before-hashing">before generating password</option>
+                        <option value="after-hashing">after generating password</option>
+                        <option value="both">before and after generating password</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>l33t Level:</span>
+                    </td>
+                    <td valign="middle">
+                      <select class="dropmenu" id="leetLevelLB" onchange="preGeneratePassword();">
+                        <option value="0">1</option>
+                        <option value="1">2</option>
+                        <option value="2">3</option>
+                        <option value="3">4</option>
+                        <option value="4">5</option>
+                        <option value="5">6</option>
+                        <option value="6">7</option>
+                        <option value="7">8</option>
+                        <option value="8">9</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Hash Algorithm:</span>
+                    </td>
+                    <td valign="middle">
+                      <select class="dropmenu" id="hashAlgorithmLB" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();">
+                        <option value="md4">MD4</option>
+                        <option value="hmac-md4">HMAC-MD4</option>
+                        <option value="md5">MD5</option>
+                        <option value="md5_v6">MD5 Version 0.6</option>
+                        <option value="hmac-md5">HMAC-MD5</option>
+                        <option value="hmac-md5_v6">HMAC-MD5 Version 0.6</option>
+                        <option value="sha1">SHA-1</option>
+                        <option value="hmac-sha1">HMAC-SHA-1</option>
+                        <option value="sha256">SHA-256</option>
+                        <option value="hmac-sha256_fix">HMAC-SHA-256</option>
+                        <option value="hmac-sha256">HMAC-SHA-256 Version 1.5.1</option>
+                        <option value="rmd160">RIPEMD-160</option>
+                        <option value="hmac-rmd160">HMAC-RIPEMD-160</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>URL Components:</span>
+                    </td>
+                    <td valign="middle">
+                      <input type="checkbox" id="protocolCB" onclick="populateURL();"/>
+                      <label for="protocolCB">
+                        Protocol
+                      </label>
+                      <input type="checkbox" id="subdomainCB" onclick="populateURL();"/>
+                      <label for="subdomainCB">
+                        Subdomain(s)
+                      </label>
+                      <input type="checkbox" id="domainCB" onclick="populateURL();" status="checked" />
+                      <label for="domainCB">
+                        Domain
+                      </label>
+                      <input type="checkbox" id="pathCB" onclick="populateURL();"/>
+                      <label for="pathCB">
+                        Port, path, anchor, query parameters
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>URL:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" type="edit" id="passwdUrl" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Length of Generated Password:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" id="passwdLength" maxlength="3" size="3" value="12" onchange="if (/\D/.test(this.value)) this.value='8';preGeneratePassword();" onkeyup="if (/\D/.test(this.value)) this.value='8';preGeneratePassword();" onkeydown="if (/\D/.test(this.value)) this.value='8';preGeneratePassword();" onkeypress="if (/\D/.test(this.value)) this.value='8';preGeneratePassword();" oninput="if (/\D/.test(this.value)) this.value='8';preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Username:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" id="usernameTB" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Modifier:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" id="counter" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Characters:</span>
+                    </td>
+                    <td valign="middle">
+                      <select id="charset" name="charset" class="editable" onchange="preGeneratePassword();">
+                        <option value="!!!edit!!!" class="activateEdit">Edit Character Set</option>
+                        <option selected="selected">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\:&quot;;'<>?,./</option>
+                        <option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</option>
+                        <option>0123456789abcdef</option>
+                        <option>0123456789</option>
+                        <option>ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz</option>
+                        <option>`~!@#$%^&*()_-+={}|[]\:&quot;;'<>?,./</option>
+                      </select>
+                      <input type="button" class="button" value="Tips" onclick="onClickTips();"/><span id="charMinWarning" style="display: none;">Two character minimum required</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Password Prefix:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" id="passwordPrefix" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Password Suffix:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" id="passwordSuffix" onchange="preGeneratePassword();" onkeyup="preGeneratePassword();" onkeydown="preGeneratePassword();" onkeypress="preGeneratePassword();" oninput="preGeneratePassword();"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="200" height="30">
+                      <span>Generated Password:</span>
+                    </td>
+                    <td valign="middle">
+                      <input class="standard" type="edit" id="passwdGenerated" style="color: #00f; background-color: #fff; font-weight: bold"/><input type="checkbox" id="ifHidePasswd" onchange="if(ifHidePasswd.checked==true){ passwdGenerated.style.color='#fff'; } else { passwdGenerated.style.color='#00f'; } saveGlobalPrefs();"/>Make password invisible (Highlight to view)
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="extension" jsselect="extensions">
+              <table width="100%" cellpadding="2" cellspacing="0">
+                <tr>
+                  <td width="62" height="50" align="center" valign="top">
+                  </td>
+                  <td valign="top">
+                  </td>
+                  <td width="100">
+                  </td>
+                  <td align="right" valign="center" width="700">
+                    <input type="button" value="Save Profile" onclick="saveProfile();"/><input type="button" value="Cancel Changes" onclick="loadProfile();"/><input type="button" value="Delete Profile" onclick="deleteProfile();"/>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div id="get-moar-extensions">
+              Chrome Extension by <a href="mailto:mail@richard-musiol.de">Richard Musiol</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <script type="text/javascript">
+      chrome.tabs.getSelected(undefined, function(tab){
+          document.getElementById("preURL").value = tab.url;
+          populateURL();
+      });
+    </script>
+  </body>
+</html>
