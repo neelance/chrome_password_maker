@@ -107,7 +107,6 @@ var profile = {
 		passwordPrefix: "",
 		passwordSuffix: ""
 }
-alert(profile.passwordPrefix);
 
 function preGeneratePassword() {
 	var charIndex = document.getElementById("charset").selectedIndex;
@@ -707,5 +706,5 @@ if (EditableSelect.hasClass(element, clazz)) {
 	}
 }
 
-EditableSelect.addEvent(window, 'load', EditableSelect.activateAll);
-BodyShow.addEvent(window, 'load', BodyShow.show);
+//EditableSelect.addEvent(window, 'load', EditableSelect.activateAll);
+//BodyShow.addEvent(window, 'load', BodyShow.show);

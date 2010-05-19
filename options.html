@@ -38,7 +38,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
                 <table cellpadding="0" cellspacing="0" width="100%">
                   <tr valign="center">
                     <td>
-                      <span class="section-header-title">Generate Password</span>
+                      <span class="section-header-title">Options</span>
                     </td>
                   </tr>
                 </table>
@@ -47,7 +47,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
             <div id="developer_tools" class="wbox-dev-mode showInDevMode">
               <div class="developer-mode">
                 <table width="100%" cellpadding="2" cellspacing="0">
-                  <tr>
+                  <!--<tr>
                     <td width="200" height="30">
                       <span>Profile:</span>
                     </td>
@@ -55,37 +55,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
                       <select id="profileLB" name="profile" class="editable" onchange="loadProfile();">
                         <option value="!!!edit!!!" class="activateEdit">New Profile</option>
                       </select>
-                      <script type="text/javascript">
-                        /*
-                         profileLB = new Bs_Dropdown();
-                         profileLB.imgDir = 'scripts/blueShoes/components/dropdown/img/win2k/';
-                         profileLB.setValue('Default');
-                         profileLB.drawInto('profileLB');
-                         profileLB.attachEvent('onChange', loadProfile);
-                         */
-                        if (getCookie("profileList") != null) {
-                            // load the various profiles
-                            var a = unescape(getCookie("profileList"));
-                            var profileListArray = a.split("|");
-                            
-                            for (var i = 0; i < profileListArray.length; i++) {
-                                var option = document.createElement("option");
-                                option.text = unescape(profileListArray[i]);
-                                EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
-                                
-                                if (i == 0) 
-                                    option.selected = "selected";
-                            }
-                        }
-                        else {
-                            profileListArray = new Array("Default");
-                            
-                            var option = document.createElement("option");
-                            option.text = "Default";
-                            EditableSelect.selectAddOption(document.getElementById("profileLB"), option);
-                            option.selected = "selected";
-                        }
-                      </script>
                     </td>
                   </tr>
                   <tr>
@@ -252,13 +221,13 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
                     <td valign="middle">
                       <input class="standard" type="edit" id="passwdGenerated" style="color: #00f; background-color: #fff; font-weight: bold"/><input type="checkbox" id="ifHidePasswd" onchange="if(ifHidePasswd.checked==true){ passwdGenerated.style.color='#fff'; } else { passwdGenerated.style.color='#00f'; } saveGlobalPrefs();"/>Make password invisible (Highlight to view)
                     </td>
-                  </tr>
+                  </tr>-->
                 </table>
               </div>
             </div>
           </div>
           <div class="content">
-            <div class="extension" jsselect="extensions">
+            <!--<div class="extension" jsselect="extensions">
               <table width="100%" cellpadding="2" cellspacing="0">
                 <tr>
                   <td width="62" height="50" align="center" valign="top">
@@ -272,7 +241,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
                   </td>
                 </tr>
               </table>
-            </div>
+            </div>-->
             <div id="get-moar-extensions">
               Chrome Extension by <a href="mailto:mail@richard-musiol.de">Richard Musiol</a>
             </div>
@@ -280,11 +249,5 @@ Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
         </div>
       </div>
     </form>
-    <script type="text/javascript">
-      chrome.tabs.getSelected(undefined, function(tab){
-          document.getElementById("preURL").value = tab.url;
-          populateURL();
-      });
-    </script>
   </body>
 </html>
