@@ -28,7 +28,6 @@ if (!loaded) {
     function passwordMakerProcessInputs(all) {
         if(processing) return;
         processing = true;
-        console.log("processing");
         
         $('input[type=password]' + (all ? '' : ':visible')).each(function(i, oldInput) {
             oldInput = $(oldInput);
