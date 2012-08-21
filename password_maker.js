@@ -15,44 +15,6 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library; if not, write to the Free Software Foundation,
 Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
-function filterUrl(url, include_protocol, include_subdomain, include_domain,
-		include_path) {
-	temp = url.match("([^://]*://)?([^:/]*)([^#]*)");
-	if (!temp) {
-		temp = [ '', '', '', '' ]; // Helps prevent an undefine based error
-	}
-	var domainSegments = temp[2].split(".");
-	while (domainSegments.length < 3) {
-		domainSegments.unshift(''); // Helps prevent the URL from displaying
-		// undefined in the URL to use box
-	}
-	var displayMe = '';
-	var displayMeTemp = include_protocol ? temp[1] : ''; // set the protocol
-	// or empty string
-	if (include_subdomain) {
-		// The subdomain is all domainSegments
-		// except the final two.
-		for ( var i = 0; i < domainSegments.length - 2; i++) {
-			displayMe += domainSegments[i];
-			// Add a dot if this isn't the final subdomain
-			if (i + 1 < domainSegments.length - 2)
-				displayMe += ".";
-		}
-	}
-
-	if (include_domain) {
-		if (displayMe != "" && displayMe[displayMe.length - 1] != ".")
-			displayMe += ".";
-		displayMe += domainSegments[domainSegments.length - 2] + "."
-				+ domainSegments[domainSegments.length - 1];
-	}
-	displayMe = displayMeTemp + displayMe;
-
-	if (include_path)
-		displayMe += temp[3];
-
-	return displayMe;
-}
 
 function makePassword(url, master, username, hashAlgorithm, whereToUseL33t,
 		l33tLevel, length, prefix, suffix, selectedChar, counterOffset) {
