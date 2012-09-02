@@ -33,3 +33,5 @@ chrome.tabs.getSelected null, (tab) ->
 
 $(window).bind "focus", ->
   $("#passwdMaster").focus()
+
+$("#passwdMaster").focus()

@@ -42,4 +42,6 @@
     return $("#passwdMaster").focus();
   });
 
+  $("#passwdMaster").focus();
+
 }).call(this);
