@@ -14,43 +14,39 @@ var processInput = function(oldInput) {
 	newInput.type = "password";
 	newInput.id = "passwordMaker" + Math.random();
 	newInput.tabIndex = oldInput.tabIndex;
+	newInput.size = oldInput.size;
+	newInput.maxLength = oldInput.maxLength;
+	newInput.placeholder = oldInput.placeholder;
+
+	var sourceStyle = window.getComputedStyle(oldInput);
+	newInput.style.width = sourceStyle.width;
+	newInput.style.height = sourceStyle.height;
 	newInput.style.backgroundPosition = "right center";
 	newInput.style.backgroundRepeat = "no-repeat";
-	var copyAttributes = function() {
-		newInput.size = oldInput.size;
-		newInput.maxLength = oldInput.maxLength;
-		newInput.placeholder = oldInput.placeholder;
+
+	var copyStyle = function() {
 		var sourceStyle = window.getComputedStyle(oldInput);
 		var targetStyle = newInput.style;
 		for (var i = 0; i < sourceStyle.length; i++) {
 			var name = sourceStyle.item(i);
-			if (!["display", "background-position", "background-repeat", "background-image"].includes(name)) {
-				if (!(name.slice(0, 6) === "border" && sourceStyle.borderStyle === "inset")) {
-					targetStyle.setProperty(name, sourceStyle.getPropertyValue(name));
-				}
+			if (!["opacity", "position", "width", "height"].includes(name) && name.substr(0, 11) != "background-") {
+				targetStyle.setProperty(name, sourceStyle.getPropertyValue(name));
 			}
 		}
 	};
-	copyAttributes();
+	copyStyle();
+	var observer = new MutationObserver(copyStyle);
+	var e = oldInput;
+	while (e !== null) {
+		observer.observe(e, { attributes: true });
+		e = e.parentElement;
+	}
 	
-	// we have to be extremely careful here that the observer can be garbage collected
-  // or else it will keep a reference to the document after the user has left the page
-	(function() {
-		var observer = new WebKitMutationObserver(copyAttributes);
-		var e = oldInput;
-		while (e !== null) {
-			observer.observe(e, {
-				attributes: true,
-				subtree: false
-			});
-			e = e.parentElement;
-		}
-		var disconnect = function() {
-			observer.disconnect();
-			window.removeEventListener("beforeunload", disconnect);
-		};
-		window.addEventListener("beforeunload", disconnect);
-	})();
+	var simulateEvent = function(type) {
+		var event = document.createEvent("Event");
+		event.initEvent(type, true, true);
+		oldInput.dispatchEvent(event);
+	};
 	
 	var generate = function() {
 		if (newInput.value === "") {
@@ -62,6 +58,8 @@ var processInput = function(oldInput) {
 			return;
 		}
 		oldInput.value = makePassword(filterUrl(window.location.href), newInput.value, "", "md5", "off", "1", "8", "", "", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`~!@#$%^&*()_-+={}|[]\\:\";'<>?,./", "");
+		simulateEvent("input");
+		simulateEvent("change");
 	};
 	
 	var enabled = true;
@@ -71,16 +69,25 @@ var processInput = function(oldInput) {
 		generate();
 	};
 	setEnabled(oldInput.value === "");
-	
+		
 	oldInput.tabIndex = null;
-	oldInput.style.display = "none";
-	oldInput.parentElement.insertBefore(newInput, oldInput.nextSibling); // inserting before leads to subtle layout changes
+	oldInput.style.opacity = 0;
+	oldInput.style.position = "absolute";
+	oldInput.style.width = 0;
+	oldInput.style.height = 0;
 	oldInput.addEventListener("change", function() {
 		if (oldInput.value !== "" && newInput.value === "") {
 			newInput.value = oldInput.value;
 			setEnabled(false);
 		}
 	});
+	oldInput.addEventListener("focus", function() {
+		newInput.focus();
+	});
+
+	oldInput.parentElement.insertBefore(newInput, oldInput.nextSibling); // inserting before leads to subtle layout changes
+
+	newInput.addEventListener("input", generate);
 	newInput.addEventListener("mousemove", function(event) {
 		newInput.style.cursor = event.offsetX > newInput.clientWidth - 16 ? "pointer" : "auto";
 	});
@@ -97,14 +104,12 @@ var processInput = function(oldInput) {
 			event.preventDefault();
 		}
 	});
+	
 	var forwardEvent = function(origEvent) {
-		var event = document.createEvent("Event");
-		event.initEvent(origEvent.type, true, true);
-		oldInput.dispatchEvent(event);
+		simulateEvent(origEvent.type);
 	};
 	newInput.addEventListener("focus", forwardEvent);
 	newInput.addEventListener("blur", forwardEvent);
-	newInput.addEventListener("input", generate);
 	
 	var label = document.querySelector("label[for=" + oldInput.id + "]");
 	if (label !== null) {
@@ -112,16 +117,22 @@ var processInput = function(oldInput) {
 	}
 };
 
-var inputs = document.querySelectorAll('input[type=password]');
-for (var i = 0; i < inputs.length; i++) {
-	processInput(inputs[i]);
-}
-
-var processing = false;
-document.addEventListener("DOMNodeInserted", function(event) {
-	if (event.target.tagName === "INPUT" && event.target.type === "password" && !processing) {
-		processing = true;
-		processInput(event.target);
-		processing = false;
+var lookForInputs = function(element) {
+	var inputs = element.querySelectorAll('input[type=password]');
+	for (var i = 0; i < inputs.length; i++) {
+		processInput(inputs[i]);
 	}
+};
+lookForInputs(document);
+
+var observer = new MutationObserver(function(mutations) {
+	mutations.forEach(function(mutation) {
+		for (var i = 0; i < mutation.addedNodes.length; i++) {
+			var node = mutation.addedNodes[i];
+			if (node instanceof Element) {
+				lookForInputs(node);				
+			}
+		}
+	});    
 });
+observer.observe(document, { childList: true, subtree: true });
