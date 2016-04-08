@@ -30,21 +30,16 @@ var generatePassword = function() {
 	);
 };
 
-var populateURL = function() {
-	document.getElementById("passwdUrl").value = filterUrl(document.getElementById("preUrl").value);
-	generatePassword();
-};
-
-document.getElementById("preUrl").addEventListener("input", populateURL);
 document.getElementById("passwdMaster").addEventListener("input", generatePassword);
 document.getElementById("passwdUrl").addEventListener("input", generatePassword);
 
 chrome.tabs.getSelected(null, function(tab) {
-	document.getElementById("preUrl").value = tab.url;
-	populateURL();
+	document.getElementById("passwdUrl").value = filterUrl(tab.url);
+	generatePassword();
 });
 
 window.addEventListener("focus", function() {
-	document.getElementById("passwdMaster").focus();
+	setTimeout(function() {
+		document.getElementById("passwdMaster").focus();		
+	}, 0);
 });
-document.getElementById("passwdMaster").focus();

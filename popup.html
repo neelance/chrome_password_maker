@@ -17,79 +17,44 @@ along with this library; if not, write to the Free Software Foundation,
 Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 -->
 <html>
-    <head>
-        <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-          <div id="body-container">
-              <div id="header">
-                  <h1>PasswordMaker</h1>
-              </div>
-              <div id="extensionTemplate">
-                  <div id="container" class="vbox-container">
-                      <div id="top" class="wbox" style="padding-right: 5px">
-                          <div class="section-header">
-                              <table cellpadding="0" cellspacing="0" width="100%">
-                                  <tr valign="center">
-                                      <td>
-                                          <span class="section-header-title">Generate Password</span>
-                                      </td>
-                                  </tr>
-                              </table>
-                          </div>
-                      </div>
-                      <div id="developer_tools" class="wbox-dev-mode showInDevMode">
-                          <div class="developer-mode">
-                              <table width="100%" cellpadding="2" cellspacing="0">
-                                  <tr>
-                                      <td width="200" height="30">
-                                          <span>Input URL:</span>
-                                      </td>
-                                      <td valign="middle">
-                                          <input class="standard" type="text" id="preUrl" />
-                                      </td>
-                                  </tr>
-                                  <tr>
-                                      <td width="200" height="30">
-                                          <span>Master Password:</span>
-                                      </td>
-                                      <td valign="middle">
-                                          <input class="standard" type="password" id="passwdMaster" />
-                                      </td>
-                                  </tr>
-                                  <tr>
-                                      <td width="200" height="30">
-                                          <span>URL:</span>
-                                      </td>
-                                      <td valign="middle">
-                                          <input class="standard" type="text" id="passwdUrl" />
-                                      </td>
-                                  </tr>
-                                  <tr>
-                                      <td width="200" height="30">
-                                          <span>Generated Password:</span>
-                                      </td>
-                                      <td valign="middle">
-                                          <input class="standard" type="text" id="passwdGenerated" style="color: #00f; background-color: #fff; font-weight: bold"/>
-                                      </td>
-                                  </tr>
-                              </table>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="content">
-                      <div id="get-moar-extensions">
-                          Chrome Extension by <a href="mailto:mail@richard-musiol.de">Richard Musiol</a>
-                      </div>
-                  </div>
-              </div>
-          </div>
-        <script type="text/javascript" src="jquery-1.8.0.js"></script>
-        <script type="text/javascript" src="parseuri.js"></script>
-        <script type="text/javascript" src="password_maker.js"></script>
-        <script type="text/javascript" src="slds.js"></script>
-        <script type="text/javascript" src="tools.js"></script>
-        <script type="text/javascript" src="popup.js"></script>
-    </body>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="./material.min.css">
+	</head>
+	<body style="width: 322px;">
+		<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-drawer-button">
+			<header class="mdl-layout__header">
+				<div class="mdl-layout__header-row">
+					<span class="mdl-layout-title">PasswordMaker</span>
+				</div>
+			</header>
+			
+			<main class="mdl-layout__content" style="padding: 10px;">
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" id="passwdUrl" value=" ">
+					<label class="mdl-textfield__label" for="passwdUrl">Domain:</label>
+				</div>
+				
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="password" id="passwdMaster">
+					<label class="mdl-textfield__label" for="passwdMaster">Master Password:</label>
+				</div>
+				
+				<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+					<input class="mdl-textfield__input" type="text" id="passwdGenerated" value=" " style="font-weight: bold">
+					<label class="mdl-textfield__label" for="passwdGenerated">Generated Password:</label>
+				</div>
+			</main>
+
+			<footer class="mdl-mega-footer">
+				Chrome Extension by <a href="https://github.com/neelance" target="_blank">Richard Musiol</a>
+			</footer>
+		</div>
+		<script src="./material.min.js"></script>
+		<script src="./parseuri.js"></script>
+		<script src="./password_maker.js"></script>
+		<script src="./slds.js"></script>
+		<script src="./tools.js"></script>
+		<script src="./popup.js"></script>
+	</body>
 </html>
