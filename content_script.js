@@ -111,9 +111,11 @@ var processInput = function(oldInput) {
 	newInput.addEventListener("focus", forwardEvent);
 	newInput.addEventListener("blur", forwardEvent);
 	
-	var label = document.querySelector("label[for=" + oldInput.id + "]");
-	if (label !== null) {
-		label.htmlFor = newInput.id;
+	if (oldInput.id !== "") {
+		var label = document.querySelector("label[for=" + oldInput.id + "]");
+		if (label !== null) {
+			label.htmlFor = newInput.id;
+		}
 	}
 };
 
