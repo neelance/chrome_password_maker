@@ -29,7 +29,7 @@ var processInput = function(oldInput) {
 		var targetStyle = newInput.style;
 		for (var i = 0; i < sourceStyle.length; i++) {
 			var name = sourceStyle.item(i);
-			if (!["opacity", "position", "width", "height"].includes(name) && name.substr(0, 11) != "background-") {
+			if (!["opacity", "position", "width", "height", "background-attachment", "background-clip", "background-image", "background-origin", "background-position", "background-repeat", "background-size"].includes(name)) {
 				targetStyle.setProperty(name, sourceStyle.getPropertyValue(name));
 			}
 		}
