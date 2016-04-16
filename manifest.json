@@ -20,7 +20,8 @@
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["parseuri.js", "password_maker.js", "slds.js", "tools.js", "content_script.js"]
+      "js": ["parseuri.js", "password_maker.js", "slds.js", "tools.js", "content_script.js"],
+      "all_frames": true
     }
   ]
 }
