@@ -15,7 +15,6 @@ var processInput = function(oldInput) {
 	newInput.id = "passwordMaker" + Math.random();
 	newInput.tabIndex = oldInput.tabIndex;
 	newInput.size = oldInput.size;
-	newInput.maxLength = oldInput.maxLength;
 	newInput.placeholder = oldInput.placeholder;
 
 	var sourceStyle = window.getComputedStyle(oldInput);
