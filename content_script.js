@@ -5,7 +5,7 @@ var icon_d = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf
 var processedInputs = [];
 
 var processInput = function(oldInput) {
-	if (processedInputs.includes(oldInput)) {
+	if (processedInputs.includes(oldInput) || (oldInput.maxLength > 0 && oldInput.maxLength < 8)) {
 		return;
 	}
 	
