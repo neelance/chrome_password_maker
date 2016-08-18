@@ -18,6 +18,9 @@ var processInput = function(oldInput) {
 	newInput.placeholder = oldInput.placeholder;
 
 	var sourceStyle = window.getComputedStyle(oldInput);
+	newInput.style.position = sourceStyle.position;
+	newInput.style.left = sourceStyle.left;
+	newInput.style.top = sourceStyle.top;
 	newInput.style.width = sourceStyle.width;
 	newInput.style.height = sourceStyle.height;
 	newInput.style.backgroundPosition = "right center";
@@ -28,7 +31,7 @@ var processInput = function(oldInput) {
 		var targetStyle = newInput.style;
 		for (var i = 0; i < sourceStyle.length; i++) {
 			var name = sourceStyle.item(i);
-			if (!["opacity", "position", "width", "height", "background-attachment", "background-clip", "background-image", "background-origin", "background-position", "background-repeat", "background-size"].includes(name)) {
+			if (!["opacity", "position", "left", "top", "width", "height", "background-attachment", "background-clip", "background-image", "background-origin", "background-position", "background-repeat", "background-size"].includes(name)) {
 				targetStyle.setProperty(name, sourceStyle.getPropertyValue(name));
 			}
 		}
